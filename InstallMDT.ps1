@@ -23,3 +23,8 @@ $ShareName="DeploymentShare$"
 New-PSDrive -Name $PSDriveName -PSProvider "MDTProvider" -Root $deploymentsharePath -Description $Description -NetworkPath \\$env:COMPUTERNAME\$ShareName | add-MDTPersistentDrive
 Write-Output "Deployment share created at $deploymentSharePath."
 
+# Step 3: input winOS into MDT
+New-PSDrive -Name "DS001" -PSProvider MDTProvider -Root "C:\DeploymentShare"
+import-mdtoperatingsystem -path "DS001:\Operating Systems" -SourcePath "D:\" -DestinationFolder "Windows 11" -Verbose
+
+
