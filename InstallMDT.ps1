@@ -92,3 +92,5 @@ $customSettingsFile = "$deploymentSharePath\Control\CustomSettings.ini"
 $customSettings | Out-File $customSettingsFile -Force
 Write-Output "CustomSettings.ini configured at $customSettingsFile."
 
+# Step 7: Install and Configure WDS (Windows Deployment Services)
+Install-WindowsFeature -Name WDS, WDS-Deployment, WDS-Transport -IncludeManagementTools
