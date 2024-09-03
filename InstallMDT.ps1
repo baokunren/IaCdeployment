@@ -46,3 +46,17 @@ import-MDTApplication -path "DS001:\Applications" -enable "True" -Name "AcroRead
 # import MDT tasks sequences
 New-PSDrive -Name "DS001" -PSProvider MDTProvider -Root "C:\DeploymentShare"
 import-mdttasksequence -path "DS001:\Task Sequences" -Name "OS with APPs" -Template "Client.xml" -Comments "" -ID "1" -Version "1.0" -OperatingSystemPath "DS001:\Operating Systems\Windows 11 Home in Windows 11 install.wim" -FullName "Windows User" -OrgName "IaCtestServer" -HomePage "about:blank" -Verbose
+
+# Step 5: Configure Bootstrap.ini
+$bootstrap = @"
+UserID=Administrator
+UserPassword=Aspire2
+UserDomain=IaCtestServer.com
+TaskSequenceID=1
+SkipTaskSequence=YES
+KeyboardLocale=en-US
+SkipBDDWelcome=YES
+"@
+$bootstrapFile = "$deploymentSharePath\Control\Bootstrap.ini"
+$bootstrap | Out-File $bootstrapFile -Force
+Write-Output "Bootstrap.ini configured at $bootstrapFile."
