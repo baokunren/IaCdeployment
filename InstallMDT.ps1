@@ -94,3 +94,6 @@ Write-Output "CustomSettings.ini configured at $customSettingsFile."
 
 # Step 7: Install and Configure WDS (Windows Deployment Services)
 Install-WindowsFeature -Name WDS, WDS-Deployment, WDS-Transport -IncludeManagementTools
+
+# Step 8: Update the Deployment Share to Reflect Changes
+Update-MDTDeploymentShare -Path $deploymentSharePath
