@@ -60,3 +60,35 @@ SkipBDDWelcome=YES
 $bootstrapFile = "$deploymentSharePath\Control\Bootstrap.ini"
 $bootstrap | Out-File $bootstrapFile -Force
 Write-Output "Bootstrap.ini configured at $bootstrapFile."
+
+# Step 6: Configure CustomSettings.ini
+$customSettings = @"
+[Settings]
+Priority=Default
+Properties=MyCustomProperty
+ 
+[Default]
+OSInstall=Y
+SkipCapture=YES
+SkipAdminPassword=YES
+SkipProductKey=YES
+SkipComputerBackup=YES
+SkipBitLocker=YES
+ 
+SkipBDDWelcome=YES
+SkipUserData=YES
+SkipTimeZone=YES
+SkipLocaleSelection=YES
+SkipComputerName=YES
+SkipSummary=YES
+SkipDomainMembership=YES
+SkipApplications=YES
+ 
+KeyboardLocale=en-US
+TimeZoneName=GMT StandardTime
+EventService=http://Deployment:9800
+"@
+$customSettingsFile = "$deploymentSharePath\Control\CustomSettings.ini"
+$customSettings | Out-File $customSettingsFile -Force
+Write-Output "CustomSettings.ini configured at $customSettingsFile."
+
