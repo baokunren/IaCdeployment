@@ -7,7 +7,8 @@ Install-ADDSForest -DomainName "IaCtestServer.com" -InstallDNS -SafeModeAdminist
 # Install Windows MDT
 Start-Process -FilePath "C:\deploymentsoftware\MicrosoftDeploymentToolkit_x64.msi" -ArgumentList "/quiet", "/norestart" -Wait
 
-
+New-Item -path "c:\deploymentshare" -itemtype directory
+New-Smbshare -name "deployment share" -path "C:\deploymentshare" -FullAccess Administrators 
 
 # Script to automate the deployment of Windows 11 using MDT and WDS
 
@@ -92,8 +93,26 @@ $customSettingsFile = "$deploymentSharePath\Control\CustomSettings.ini"
 $customSettings | Out-File $customSettingsFile -Force
 Write-Output "CustomSettings.ini configured at $customSettingsFile."
 
+#Disable the X86 boot wim and change the selection profile for the X64 boot wim
+$XMLfile = "C:\deploymentShare\control\settings.xml"
+    [xml]$settingsXML = Get-Content $XMLfile
+    $SettingsXML.settings."SupportX86" = "False"
+    $SettingsXML.Save($XMLfile)
+
+
 # Step 7: Install and Configure WDS (Windows Deployment Services)
 Install-WindowsFeature -Name WDS, WDS-Deployment, WDS-Transport -IncludeManagementTools
 
 # Step 8: Update the Deployment Share to Reflect Changes
 Update-MDTDeploymentShare -Path $deploymentSharePath
+
+#installing WDS using powershell
+$WDSPath = "C:\RemoteInstall"
+WDSutil /verbose /progress /Initialize-Server /RemInst:$WDSPath
+Start-Sleep -s 10
+WDSutil /verbose /Start-server
+Start-Sleep -s 10
+WDSutil /set-Server /AnswerClients:ALL
+Import-WDSBootImage -Path C:\DeploymentShare\Boot\LiteTouchPE_x64.wim
+NewImageName "LiteTouchPE_x64" -SkipVerify
+
